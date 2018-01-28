@@ -1,2 +1,2 @@
 # このリポジトリは？
-pochiMasahiroがAtCoder(主にABC)をHaskellを使ってのんびり解いていくリポジトリです。
+pochiMasahiroがAtCoder(主にABC)をのんびり解いていくリポジトリです。
