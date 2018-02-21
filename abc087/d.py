@@ -1,42 +1,38 @@
-import sys
-l1 = list(map(int, input().split()))
-N = l1[0]
-M = l1[1]
+from collections import deque
 
-
-per_dis = [ [] for n in range(N+1)]
-people = [None] * (N+1)
-
-for n in range(M):
-    x = list(map(int, input().split()))
-    per_dis[x[0]].append((x[1], x[2]))
-    per_dis[x[1]].append((x[0], -x[2]))
-
-if M != 0:
-    visited = []
-    unvisited = [(x[0], 0)]
-    people[x[0]] = 0
+def bfs(x, graph, people):
+    if people[x] is not None:
+        return
+    unvisited = deque([x])
+    people[x] = 0
     while unvisited:
-        now = unvisited[0]
-        unvisited = unvisited[1:]
-        for next in per_dis[now[0]]:
-            if next[0] not in visited:
-                people[next[0]] =  now[1] + next[1]
-                unvisited.append((next[0], now[1] + next[1]))
-                visited.append(now[0])
+        now = unvisited.popleft()
+        for next, d in graph[now]:
+            if people[next] is None:
+                people[next] =  people[now] + d
+                unvisited.append(next)
 
-for i, x in enumerate(per_dis):
-    if x != None:
-        for y in x:
-            if y[1] < 0:
-                if people[y[0]] - people[i] != y[1]:
-                    print("No")
-                    sys.exit()
-            else:
-                if people[i] - people[y[0]] != -y[1]:
-                    print("No")
-                    sys.exit()
+def main():
+    N, M = list(map(int, input().split()))
+
+    graph = [ [] for n in range(N+1)]
+    people = [None] * (N+1)
+
+    for n in range(M):
+        L, R, D = list(map(int, input().split()))
+        graph[L].append((R, D))
+        graph[R].append((L, -D))
+    for i in range(1, N+1):
+        bfs(i, graph, people)
+
+    for i in range(1, N+1):
+        for j, d in graph[i]:
+            if people[j] - people[i] != d:
+                print("No")
+                exit()
+    else:
+        print("Yes")
 
 
-print("Yes")
-                
+if __name__ == "__main__":
+    main()
